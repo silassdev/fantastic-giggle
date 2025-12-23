@@ -1,26 +1,20 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
 
-export interface IProduct extends Document {
+export interface IUser extends Document {
   name: string;
-  slug: string;
-  description: string;
-  price: number;
-  images: string[];
-  stock: number;
-  category?: string;
+  email: string;
+  password: string;
+  role: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
-const ProductSchema = new Schema<IProduct>({
+const UserSchema = new Schema<IUser>({
   name: { type: String, required: true },
-  slug: { type: String, required: true, unique: true },
-  description: { type: String, default: "" },
-  price: { type: Number, required: true },
-  images: { type: [String], default: [] },
-  stock: { type: Number, default: 0 },
-  category: { type: String },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  role: { type: String, default: "user" },
 }, { timestamps: true });
 
-const Product: Model<IProduct> = mongoose.models.Product || mongoose.model<IProduct>("Product", ProductSchema);
-export default Product;
+const User: Model<IUser> = mongoose.models.User || mongoose.model<IUser>("User", UserSchema);
+export default User;
