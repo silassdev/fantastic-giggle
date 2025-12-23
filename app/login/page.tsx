@@ -2,16 +2,39 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
+
 
 export default function LoginPage() {
-    const [isLoading, setIsLoading] = useState(false);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [err, setErr] = useState('');
+    const router = useRouter();
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    async function submit(e: React.FormEvent) {
         e.preventDefault();
-        setIsLoading(true);
-        // Logic will be handled here
-        setTimeout(() => setIsLoading(false), 1500);
-    };
+        setErr('');
+        try {
+            const res = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password }),
+            });
+
+            const data = await res.json();
+            if (!res.ok) {
+                setErr(data.message || 'Login failed');
+                return;
+            }
+
+            // data.user.role may be 'admin' or 'user'
+            const role = data.user?.role;
+            if (role === 'admin') router.push('/admin');
+            else router.push('/');
+        } catch (e: any) {
+            setErr(e.message || 'Network error');
+        }
+    }
 
     return (
         <div className="min-h-[80vh] flex items-center justify-center py-12 px-4">

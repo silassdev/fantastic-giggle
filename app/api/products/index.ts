@@ -1,23 +1,34 @@
-import type { NextApiRequest, NextApiResponse } from "next";
-import connect from "../../../lib/mongoose";
-import Product from "../../../models/Product";
+import { NextResponse } from 'next/server';
+import connect from '@/lib/mongoose';
+import Product from '@/models/Product';
+import { requireAdminFromRequest } from '@/lib/auth';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export async function GET(req: Request) {
   await connect();
-  if (req.method === "GET") {
-    const q = req.query.q as string | undefined;
-    const filter = q ? { $text: { $search: q } } : {};
-    const products = await Product.find(filter).sort({ createdAt: -1 }).limit(100);
-    return res.json(products);
-  }
+  try { requireAdminFromRequest(req); } catch (e) { return NextResponse.json({ message: 'unauth' }, { status: 401 }); }
 
-  if (req.method === "POST") {
-    // Basic admin-only check omitted for brevity — add JWT auth in production
-    const { name, slug, description, price, images, stock, category } = req.body;
-    const product = new Product({ name, slug, description, price, images, stock, category });
-    await product.save();
-    return res.status(201).json(product);
-  }
+  const url = new URL(req.url);
+  const q = url.searchParams.get('q') || '';
+  const category = url.searchParams.get('category');
+  const sort = url.searchParams.get('sort') || '-createdAt';
+  const page = Number(url.searchParams.get('page') || '1');
+  const limit = Number(url.searchParams.get('limit') || '50');
+  const skip = (page - 1) * limit;
 
-  res.status(405).end();
+  const filter: any = {};
+  if (q) filter.$text = { $search: q };
+  if (category) filter.category = category;
+
+  const items = await Product.find(filter).sort(sort).skip(skip).limit(limit);
+  const total = await Product.countDocuments(filter);
+  return NextResponse.json({ items, total });
+}
+
+export async function POST(req: Request) {
+  await connect();
+  try { requireAdminFromRequest(req); } catch (e) { return NextResponse.json({ message: 'unauth' }, { status: 401 }); }
+
+  const body = await req.json();
+  const p = await Product.create(body);
+  return NextResponse.json(p, { status: 201 });
 }

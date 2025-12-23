@@ -4,6 +4,11 @@ import Header from './components/Header';
 import Link from 'next/link';
 import { ThemeProvider } from './components/ThemeProvider';
 
+import { seedAdmin } from '@/lib/seedAdmin';
+
+
+seedAdmin();
+
 export const metadata = {
     title: 'ECOM - Premium Tech & Components',
     description: 'Modern store for high-performance PCs, peripherals and accessories',
