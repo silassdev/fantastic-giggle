@@ -1,35 +1,89 @@
-NextCommerce — Ultra Modern E‑Commerce App Readme
-NextCommerce is a fast, accessible, and modular e‑commerce starter built with Next.js. . It focuses on developer experience, performance, and conversion‑first UX so teams can ship production stores quickly.
+Next.js E-commerce
 
-Overview
-What this repo is  
-A production‑ready Next.js  storefront template with headless commerce patterns, server and edge rendering, incremental static regeneration, and a component system designed for rapid customization.
+A modern full-stack e-commerce scaffold built with Next.js App Router, designed for a computer & accessories store.
+Includes a production-ready frontend, API routes, MongoDB backend, and a lightweight admin system.
 
-Goals
+––––
+Tech Stack
 
-Performance first: sub‑200ms TTFB, optimized images, and minimal client JS.
+Frontend
+	•	Next.js (App Router) – server components by default
+	•	TypeScript
+	•	Tailwind CSS
+	•	Framer Motion (animations)
 
-Composable: swap payment, search, or CMS providers with minimal code.
+Backend
+	•	MongoDB + Mongoose
+	•	Next.js Route Handlers (app/api/*)
+	•	JWT authentication (httpOnly cookie)
 
-Accessible: WCAG conscious components and keyboard flows.
+Services
+	•	Cloudinary
 
-Developer joy: clear DX, TypeScript, and test coverage.
+⸻
 
 Features
-Hybrid Rendering: SSR, SSG, and Edge functions where appropriate.
 
-Headless Commerce Ready: adapters for Shopify, BigCommerce, Commerce.js, or custom APIs.
+Core
+	•	App Router architecture
+	•	Fully typed codebase
+	•	Responsive UI with Tailwind CSS
+	•	Animations via Framer Motion
 
-Checkout Flow: secure, extensible checkout with webhooks and server actions.
+Authentication
+	•	Shared /login route for users and admins
+	•	JWT stored in httpOnly cookie
+	•	Role-based access (admin vs user)
+	•	Secure password hashing
 
-Product Catalog: faceted search, filters, and dynamic variants.
+Admin System
+	•	Admin dashboard for product management
+	•	Add / edit / delete products
+	•	Upload product images (Cloudinary example)
+	•	Product attributes:
+	•	Tags
+	•	Colors
+	•	Stock status (outOfStock)
+	•	Toggle product visibility from public store
+	•	One-time safe admin seeding via environment variables
+	•	Admin password reset flow (token-based)
 
-Cart Persistence: local + server sync with optimistic UI.
+Data Models
+	•	User
+	•	Product
+	•	Order
 
-Internationalization: locale routing and currency formatting.
+Storefront
+	•	Public product listing
+	•	Option to hide out-of-stock products
+	•	Clean separation of public vs admin routes
 
-A11y and SEO: semantic markup, structured data, and meta management.
+⸻
 
-CI Friendly: linting, type checks, unit and E2E tests included.
 
-Design System: tokenized styles, dark mode, and responsive primitives.
+
+Security Notes
+	•	JWT stored in httpOnly cookies
+	•	Admin routes protected server-side
+	•	No sensitive secrets exposed to the client
+	•	Password reset tokens are time-limited
+
+⸻
+
+Intended Use
+
+This project is ideal for:
+	•	Learning Next.js App Router
+	•	Rapid e-commerce prototyping
+	•	Internal tools or MVPs
+	•	Custom storefronts with admin control
+
+
+⸻
+
+Roadmap Ideas
+	•	Payments (Stripe)
+	•	Order history for users
+	•	Product search & filters
+	•	Role-based permissions
+	•	Email notifications
