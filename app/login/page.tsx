@@ -23,37 +23,37 @@ export default function LoginPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="w-full max-w-md"
             >
-                <div className="glass p-8 md:p-10 rounded-[2.5rem] shadow-2xl border-white/50">
+                <div className="glass p-8 md:p-10 rounded-[2.5rem] shadow-2xl border-white/50 dark:border-gray-800">
                     <div className="text-center mb-10">
                         <Link href="/" className="inline-block mb-6">
-                            <span className="font-black text-3xl tracking-tighter text-brand-dark">
+                            <span className="font-black text-3xl tracking-tighter text-brand-dark dark:text-white">
                                 ECOM<span className="text-brand-primary">.</span>
                             </span>
                         </Link>
-                        <h1 className="text-2xl font-bold text-brand-dark">Welcome back</h1>
-                        <p className="text-gray-500 mt-2">Enter your details to access your account</p>
+                        <h1 className="text-2xl font-bold text-brand-dark dark:text-white">Welcome back</h1>
+                        <p className="text-gray-500 dark:text-gray-400 mt-2">Enter your details to access your account</p>
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div>
-                            <label className="block text-sm font-bold text-brand-dark mb-2 ml-1">Email Address</label>
+                            <label className="block text-sm font-bold text-brand-dark dark:text-gray-300 mb-2 ml-1">Email Address</label>
                             <input
                                 type="email"
                                 required
-                                className="w-full px-5 py-4 rounded-2xl border-gray-100 bg-white/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-primary/20 transition-standard outline-none"
+                                className="w-full px-5 py-4 rounded-2xl border-gray-100 dark:border-gray-800 bg-white/50 dark:bg-gray-900/50 text-brand-dark dark:text-white focus:bg-white dark:focus:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-primary/20 transition-standard outline-none placeholder:text-gray-400 dark:placeholder:text-gray-600"
                                 placeholder="name@company.com"
                             />
                         </div>
 
                         <div>
                             <div className="flex items-center justify-between mb-2 ml-1">
-                                <label className="block text-sm font-bold text-brand-dark">Password</label>
+                                <label className="block text-sm font-bold text-brand-dark dark:text-gray-300">Password</label>
                                 <Link href="#" className="text-xs font-semibold text-brand-primary hover:underline">Forgot password?</Link>
                             </div>
                             <input
                                 type="password"
                                 required
-                                className="w-full px-5 py-4 rounded-2xl border-gray-100 bg-white/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-primary/20 transition-standard outline-none"
+                                className="w-full px-5 py-4 rounded-2xl border-gray-100 dark:border-gray-800 bg-white/50 dark:bg-gray-900/50 text-brand-dark dark:text-white focus:bg-white dark:focus:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-primary/20 transition-standard outline-none placeholder:text-gray-400 dark:placeholder:text-gray-600"
                                 placeholder="••••••••"
                             />
                         </div>
@@ -61,14 +61,14 @@ export default function LoginPage() {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full py-4 rounded-2xl bg-brand-dark text-white font-bold transition-standard hover:bg-brand-primary shadow-lg shadow-brand-dark/20 hover:shadow-brand-primary/30 disabled:opacity-50"
+                            className="w-full py-4 rounded-2xl bg-brand-dark dark:bg-brand-primary text-white font-bold transition-standard hover:bg-brand-primary dark:hover:bg-brand-secondary shadow-lg shadow-brand-dark/20 dark:shadow-brand-primary/20 hover:shadow-brand-primary/30 disabled:opacity-50"
                         >
                             {isLoading ? 'Signing in...' : 'Sign In'}
                         </button>
                     </form>
 
                     <div className="mt-8 text-center">
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
                             Don't have an account?{' '}
                             <Link href="/register" className="font-bold text-brand-primary hover:underline">
                                 Create an account

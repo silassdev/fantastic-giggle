@@ -1,24 +1,46 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-primary: #3b82f6;
-  --color-brand-secondary: #10b981;
-  --color-brand-dark: #1e293b;
-  --color-brand-light: #f8fafc;
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-secondary: var(--brand-secondary);
+  --color-brand-dark: var(--brand-dark);
+  --color-brand-light: var(--brand-light);
 }
 
 :root {
   --container-padding: 1.5rem;
+  --brand-primary: #3b82f6;
+  --brand-secondary: #10b981;
+  --brand-dark: #1e293b;
+  --brand-light: #f8fafc;
+  --bg-gradient: radial-gradient(circle at top left, #f8fafc 0%, #f1f5f9 100%);
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.3);
 }
 
-html, body {
+/* Explicitly target the .dark class on html/body */
+html.dark,
+.dark {
+  --brand-primary: #60a5fa;
+  --brand-secondary: #34d399;
+  --brand-dark: #f8fafc;
+  --brand-light: #0f172a;
+  --bg-gradient: radial-gradient(circle at top left, #0f172a 0%, #020617 100%);
+  --glass-bg: rgba(15, 23, 42, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+html,
+body {
   height: 100%;
   scroll-behavior: smooth;
 }
 
 body {
-  background: radial-gradient(circle at top left, #f8fafc 0%, #f1f5f9 100%);
+  background: var(--bg-gradient);
+  background-attachment: fixed;
   min-height: 100vh;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 .container {
@@ -31,10 +53,10 @@ body {
 
 /* Glassmorphism */
 .glass {
-  background: rgba(255, 255, 255, 0.7);
+  background: var(--glass-bg);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid var(--glass-border);
 }
 
 .glass-dark {
@@ -50,9 +72,17 @@ body {
 }
 
 @keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-  100% { transform: translateY(0px); }
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
 }
 
 /* Transitions */

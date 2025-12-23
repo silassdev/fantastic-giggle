@@ -23,7 +23,7 @@ export default function Hero() {
                         initial={{ y: 20, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         transition={{ duration: 0.6, ease: "easeOut" }}
-                        className="text-5xl md:text-7xl font-black text-brand-dark leading-[1.1] tracking-tight"
+                        className="text-5xl md:text-7xl font-black text-brand-dark dark:text-white leading-[1.1] tracking-tight"
                     >
                         Precision <br />
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-primary to-blue-400">Engineering.</span>
@@ -33,7 +33,7 @@ export default function Hero() {
                         initial={{ y: 20, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         transition={{ delay: 0.2, duration: 0.6 }}
-                        className="mt-6 text-lg text-gray-500 max-w-lg leading-relaxed"
+                        className="mt-6 text-lg text-gray-500 dark:text-gray-400 max-w-lg leading-relaxed"
                     >
                         Elevate your professional and creative workflow with our curated selection of high-performance components and peripherals.
                     </motion.p>
@@ -47,7 +47,7 @@ export default function Hero() {
                         <a href="/products" className="px-8 py-4 rounded-full bg-brand-primary text-white font-bold transition-standard shadow-lg shadow-brand-primary/30 hover:shadow-brand-primary/50 hover:-translate-y-1">
                             Explore Setup
                         </a>
-                        <a href="/about" className="px-8 py-4 rounded-full glass border-gray-200 text-brand-dark font-bold transition-standard hover:bg-white/80">
+                        <a href="/about" className="px-8 py-4 rounded-full glass border-gray-200 dark:border-gray-800 text-brand-dark dark:text-white font-bold transition-standard hover:bg-white/10">
                             Our Philosophy
                         </a>
                     </motion.div>
@@ -61,13 +61,13 @@ export default function Hero() {
                 >
                     <div className="absolute -inset-4 bg-gradient-to-r from-brand-primary to-brand-secondary opacity-20 blur-2xl rounded-[3rem]"></div>
                     <div className="relative glass p-4 rounded-[2.5rem] shadow-2xl animate-float">
-                        <div className="overflow-hidden rounded-[2rem] bg-brand-dark aspect-square md:aspect-video flex items-center justify-center">
+                        <div className="overflow-hidden rounded-[2rem] bg-brand-dark dark:bg-gray-950 aspect-square md:aspect-video flex items-center justify-center">
                             <img
                                 src="/images/starter_pack.png"
                                 alt="Premium Tech Setup"
                                 className="w-full h-full object-cover opacity-80"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/80 via-transparent to-transparent"></div>
+                            <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/80 dark:from-gray-950/80 via-transparent to-transparent"></div>
                             <div className="absolute bottom-8 left-8 right-8">
                                 <div className="text-white font-bold text-2xl uppercase tracking-tight">Elite Series V2</div>
                                 <div className="text-brand-primary font-mono text-sm mt-1">AVAILABLE NOW / NX-2024</div>
@@ -88,7 +88,7 @@ export default function Hero() {
                             </div>
                             <div>
                                 <div className="text-xs font-bold text-gray-400 uppercase tracking-widest">In Stock</div>
-                                <div className="text-sm font-black text-brand-dark font-mono">24H DELIVERY</div>
+                                <div className="text-sm font-black text-brand-dark dark:text-white font-mono uppercase">24H DELIVERY</div>
                             </div>
                         </div>
                     </motion.div>
