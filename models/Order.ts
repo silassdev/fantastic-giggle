@@ -1,28 +1,42 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
 
 export interface IOrderItem {
-  product: mongoose.Types.ObjectId;
-  qty: number;
+  productId: mongoose.Types.ObjectId;
+  name: string;
   price: number;
+  qty: number;
 }
 
 export interface IOrder extends Document {
-  user: mongoose.Types.ObjectId;
+  userId: mongoose.Types.ObjectId;
   items: IOrderItem[];
+  shipping: {
+    phone: string;
+    address: string;
+    city: string;
+    state: string;
+    country: string;
+  };
+  status: 'PENDING_PAYMENT' | 'PAID' | 'SHIPPED' | 'CANCELLED';
   total: number;
-  status: "pending" | "paid" | "shipped" | "completed" | "cancelled";
+  paymentMethod?: string;
+  paymentRef?: string;
+  paymentStatus?: string;
   createdAt: Date;
+  updatedAt: Date;
 }
 
-const OrderSchema = new Schema<IOrder>({
-  user: { type: Schema.Types.ObjectId, ref: "User", required: true },
-  items: [{
-    product: { type: Schema.Types.ObjectId, ref: "Product", required: true },
-    qty: { type: Number, required: true },
-    price: { type: Number, required: true },
-  }],
-  total: { type: Number, required: true },
-  status: { type: String, default: "pending" },
+const OrderSchema = new Schema({
+  userId: { type: Schema.Types.ObjectId, ref: 'User' },
+  items: [{ productId: Schema.Types.ObjectId, name: String, price: Number, qty: Number }],
+  shipping: { phone: String, address: String, city: String, state: String, country: String },
+  status: { type: String, enum: ['PENDING_PAYMENT', 'PAID', 'SHIPPED', 'CANCELLED'], default: 'PENDING_PAYMENT' },
+  total: Number,
+
+  // payment tracking
+  paymentMethod: { type: String },
+  paymentRef: { type: String },
+  paymentStatus: { type: String },
 }, { timestamps: true });
 
 const Order: Model<IOrder> = mongoose.models.Order || mongoose.model<IOrder>("Order", OrderSchema);

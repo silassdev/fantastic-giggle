@@ -34,7 +34,7 @@ export default function Header() {
                 </motion.div>
 
                 <nav className="hidden md:flex items-center gap-8">
-                    {['Shop', 'About', 'Admin'].map((item) => (
+                    {['Shop', 'About'].map((item) => (
                         <Link
                             key={item}
                             href={`/${item.toLowerCase()}`}

@@ -4,9 +4,16 @@ export interface IUser extends Document {
   name: string;
   email: string;
   password: string;
-  role: string;
+  role: 'user' | 'admin';
   resetToken?: string;
   resetExpires?: number;
+  shipping?: {
+    phone: string;
+    address: string;
+    city: string;
+    state: string;
+    country: string;
+  };
   createdAt: Date;
   updatedAt: Date;
 }

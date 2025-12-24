@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import useSWR from "swr";
-import api from "../lib/api";
+import api from "@/lib/api";
 import ProductCard from "../components/ProductCard";
 
 const fetcher = (url: string) => api.get(url).then(r => r.data);

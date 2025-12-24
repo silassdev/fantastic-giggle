@@ -8,6 +8,8 @@ export interface IProduct extends Document {
   images: string[];
   stock: number;
   category?: string;
+  isActive: { type: Boolean, default: true },
+  outOfStock: { type: Boolean, default: false },
   createdAt: Date;
   updatedAt: Date;
 }
