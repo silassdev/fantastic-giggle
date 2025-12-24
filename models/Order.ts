@@ -17,6 +17,12 @@ export interface IOrder extends Document {
     state: string;
     country: string;
   };
+  appliedCoupon?: {
+    id: any;
+    code: string;
+    percent: number;
+    discountAmount: number;
+  };
   status: 'PENDING_PAYMENT' | 'PAID' | 'SHIPPED' | 'CANCELLED';
   total: number;
   paymentMethod?: string;
@@ -30,6 +36,12 @@ const OrderSchema = new Schema({
   userId: { type: Schema.Types.ObjectId, ref: 'User' },
   items: [{ productId: Schema.Types.ObjectId, name: String, price: Number, qty: Number }],
   shipping: { phone: String, address: String, city: String, state: String, country: String },
+  appliedCoupon: {
+    id: { type: Schema.Types.ObjectId, ref: 'Coupon' },
+    code: String,
+    percent: Number,
+    discountAmount: Number,
+  },
   status: { type: String, enum: ['PENDING_PAYMENT', 'PAID', 'SHIPPED', 'CANCELLED'], default: 'PENDING_PAYMENT' },
   total: Number,
 
