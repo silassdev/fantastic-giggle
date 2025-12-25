@@ -32,6 +32,14 @@ export interface IOrder extends Document {
   updatedAt: Date;
 }
 
+const TrackingUpdateSchema = new Schema({
+  status: { type: String },
+  message: { type: String },
+  location: { type: String },
+  updatedBy: { type: Schema.Types.ObjectId, ref: 'User' },
+  createdAt: { type: Date, default: Date.now },
+});
+
 const OrderSchema = new Schema({
   userId: { type: Schema.Types.ObjectId, ref: 'User' },
   items: [{ productId: Schema.Types.ObjectId, name: String, price: Number, qty: Number }],
@@ -49,6 +57,14 @@ const OrderSchema = new Schema({
   paymentMethod: { type: String },
   paymentRef: { type: String },
   paymentStatus: { type: String },
+  trackingStatus: { type: String, default: 'pending' },
+  trackingUpdates: { type: [TrackingUpdateSchema], default: [] },
+
+  deliveryProof: {
+    imageUrl: String,
+    signature: String,
+    deliveredAt: Date,
+  },
 }, { timestamps: true });
 
 const Order: Model<IOrder> = mongoose.models.Order || mongoose.model<IOrder>("Order", OrderSchema);

@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import connect from '@/lib/mongoose';
 import Coupon from '@/models/Coupon';
 import { requireAdminFromRequest } from '@/lib/auth';
+import { updateCouponSchema } from '@/lib/validators/coupon';
+
 
 export async function GET(req: Request) {
     await connect();
@@ -19,6 +21,25 @@ export async function GET(req: Request) {
     const items = await Coupon.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit);
     const total = await Coupon.countDocuments(filter);
     return NextResponse.json({ items, total });
+}
+
+export async function PUT(req: Request, { params }: { params: { id: string } }) {
+    await connect();
+    try { requireAdminFromRequest(req); } catch { return NextResponse.json({ message: 'unauth' }, { status: 401 }); }
+
+    const { id } = params;
+    if (!mongoose.isValidObjectId(id)) return NextResponse.json({ message: 'invalid id' }, { status: 400 });
+
+    const bodyText = await req.text();
+    let body: any;
+    try { body = JSON.parse(bodyText); } catch { return NextResponse.json({ message: 'invalid json' }, { status: 400 }); }
+
+    const parsed = updateCouponSchema.safeParse(body);
+    if (!parsed.success) return NextResponse.json({ message: 'invalid input', errors: parsed.error.format() }, { status: 400 });
+
+    const allowed = parsed.data;
+    const updated = await Coupon.findByIdAndUpdate(id, allowed, { new: true });
+    return NextResponse.json(updated);
 }
 
 export async function POST(req: Request) {

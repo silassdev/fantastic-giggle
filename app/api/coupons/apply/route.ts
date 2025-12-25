@@ -1,19 +1,36 @@
 import { NextResponse } from 'next/server';
 import connect from '@/lib/mongoose';
 import Coupon from '@/models/Coupon';
+import { applyCouponSchema } from '@/lib/validators/coupon';
+import { isRateLimited } from '@/lib/rateLimiter';
 import mongoose from 'mongoose';
 
 type CartItem = { productId: string; qty: number; price: number };
 
 export async function POST(req: Request) {
     await connect();
-    const body = await req.json();
-    const { code, items } = body as { code?: string; items: CartItem[] };
 
-    if (!code) return NextResponse.json({ ok: false, message: 'code required' }, { status: 400 });
-    if (!Array.isArray(items) || !items.length) return NextResponse.json({ ok: false, message: 'cart empty' }, { status: 400 });
+    // rate-limit by IP
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || req.headers.get('x-real-ip') || 'unknown';
+    const rl = isRateLimited(`coupon_apply:${ip}`);
+    if (rl.limited) {
+        return NextResponse.json({ ok: false, message: `Too many attempts. Try again in ${Math.ceil(rl.resetAfterMs / 1000)}s` }, { status: 429 });
+    }
 
-    // exact, case-sensitive match
+    // parse + validate
+    let body: any;
+    try {
+        body = await req.json();
+    } catch {
+        return NextResponse.json({ ok: false, message: 'Invalid JSON' }, { status: 400 });
+    }
+
+    const parsed = applyCouponSchema.safeParse(body);
+    if (!parsed.success) {
+        return NextResponse.json({ ok: false, message: 'Invalid payload', errors: parsed.error.format() }, { status: 400 });
+    }
+    const { code, items } = parsed.data;
+
     const coupon = await Coupon.findOne({ code });
     if (!coupon) return NextResponse.json({ ok: false, message: 'invalid coupon' }, { status: 404 });
 
@@ -21,22 +38,27 @@ export async function POST(req: Request) {
     if (coupon.expiresAt && Date.now() > coupon.expiresAt) return NextResponse.json({ ok: false, message: 'coupon expired' }, { status: 400 });
     if (coupon.usageLimit && (coupon.usedCount || 0) >= coupon.usageLimit) return NextResponse.json({ ok: false, message: 'coupon usage limit reached' }, { status: 400 });
 
-    // Compute eligible subtotal
+    // compute totals
     const productIdSet = new Set((coupon.productIds || []).map((id: any) => id.toString()));
-    let eligibleAmount = 0;
     let total = 0;
-    const breakdown: { item: CartItem; eligible: boolean; discount: number }[] = [];
+    let discountTotal = 0;
+    const breakdown: { productId: string; qty: number; price: number; eligible: boolean; discount: number }[] = [];
 
     for (const it of items) {
-        const lineTotal = it.price * (it.qty || 1);
+        const lineTotal = it.price * it.qty;
         total += lineTotal;
         const eligible = productIdSet.size === 0 || productIdSet.has(it.productId.toString());
         const discount = eligible ? Math.round((lineTotal * coupon.percent) / 100) : 0;
-        if (eligible) eligibleAmount += lineTotal;
-        breakdown.push({ item: it, eligible, discount });
+        discountTotal += discount;
+        breakdown.push({ productId: it.productId, qty: it.qty, price: it.price, eligible, discount });
     }
 
-    const discountTotal = breakdown.reduce((s, b) => s + b.discount, 0);
+    // enforce minCartTotal if set
+    const minTotal = coupon.minCartTotal || 0;
+    if (minTotal > 0 && total < minTotal) {
+        return NextResponse.json({ ok: false, message: `Cart total must be at least ${minTotal} to use this coupon` }, { status: 400 });
+    }
+
     const newTotal = Math.max(0, total - discountTotal);
 
     return NextResponse.json({
@@ -47,8 +69,10 @@ export async function POST(req: Request) {
             title: coupon.title,
             percent: coupon.percent,
             description: coupon.description,
+            minCartTotal: coupon.minCartTotal || 0,
         },
         totals: { total, discount: discountTotal, newTotal },
         breakdown,
+        rateLimit: { remaining: rl.remaining, resetAfterMs: rl.resetAfterMs },
     });
 }

@@ -34,7 +34,7 @@ export default function Header() {
                 </motion.div>
 
                 <nav className="hidden md:flex items-center gap-8">
-                    {['Shop', 'About'].map((item) => (
+                    {['Products', 'About'].map((item) => (
                         <Link
                             key={item}
                             href={`/${item.toLowerCase()}`}
@@ -51,10 +51,10 @@ export default function Header() {
                         <div className="relative group">
                             <input
                                 name="q"
-                                placeholder="Search premium tech..."
+                                placeholder="Search product here..."
                                 className="w-64 px-4 py-2 rounded-full glass border-gray-200 dark:border-gray-800 focus:outline-none focus:ring-2 focus:ring-brand-primary/20 text-sm transition-standard"
                             />
-                            <kbd className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-gray-400 border rounded px-1.5 hidden lg:block">⌘K</kbd>
+                            <kbd className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-gray-400 border rounded px-1.5 hidden lg:block">⌘enter</kbd>
                         </div>
                     </div>
 

@@ -36,7 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                                         <ul className="space-y-2 text-sm text-gray-500 dark:text-gray-400">
                                             <li><Link href="/products" className="hover:text-brand-dark dark:hover:text-white transition-standard">Store</Link></li>
                                             <li><Link href="/about" className="hover:text-brand-dark dark:hover:text-white transition-standard">Our Story</Link></li>
-                                            <li><Link href="/blog" className="hover:text-brand-dark dark:hover:text-white transition-standard">Tech Insights</Link></li>
+                                            <li><Link href="/contact" className="hover:text-brand-dark dark:hover:text-white transition-standard">Contact</Link></li>
                                         </ul>
                                     </div>
                                     <div className="space-y-4">
@@ -44,7 +44,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                                         <ul className="space-y-2 text-sm text-gray-500 dark:text-gray-400">
                                             <li><Link href="#" className="hover:text-brand-dark dark:hover:text-white transition-standard">Twitter</Link></li>
                                             <li><Link href="#" className="hover:text-brand-dark dark:hover:text-white transition-standard">Instagram</Link></li>
-                                            <li><Link href="#" className="hover:text-brand-dark dark:hover:text-white transition-standard">GitHub</Link></li>
+                                            <li><Link href="#" className="hover:text-brand-dark dark:hover:text-white transition-standard">Facebook</Link></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -53,7 +53,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                                     <div className="flex gap-6 text-xs text-gray-400 font-bold uppercase tracking-tighter">
                                         <Link href="#" className="hover:text-brand-dark dark:hover:text-white">Privacy</Link>
                                         <Link href="#" className="hover:text-brand-dark dark:hover:text-white">Terms</Link>
-                                        <Link href="#" className="hover:text-brand-dark dark:hover:text-white">Cookies</Link>
                                     </div>
                                 </div>
                             </div>

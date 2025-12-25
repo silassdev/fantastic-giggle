@@ -9,6 +9,7 @@ export interface ICoupon extends Document {
     active: boolean;
     usageLimit?: number;
     usedCount?: number;
+    minCartTotal?: number;
     expiresAt?: number;
     createdAt: Date;
     updatedAt: Date;

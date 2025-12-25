@@ -30,14 +30,15 @@ export async function POST(req: Request) {
 
     const subtotal = items.reduce((s: number, i: any) => s + i.price * i.qty, 0);
 
+
     let couponPayload = null;
-    let discountTotal = 0;
-
-    if (couponCode) {
-        const coupon = await Coupon.findOne({ code: couponCode });
+    if (body.couponCode) {
+        const code = body.couponCode; // from client checkout
+        const coupon = await Coupon.findOne({ code });
         if (coupon && coupon.active && (!coupon.expiresAt || Date.now() <= coupon.expiresAt) && (!coupon.usageLimit || (coupon.usedCount || 0) < coupon.usageLimit)) {
+            // compute discount same way as apply route
             const productIdSet = new Set((coupon.productIds || []).map((id: any) => id.toString()));
-
+            let discountTotal = 0;
             for (const it of items) {
                 const lineTotal = it.price * it.qty;
                 const eligible = productIdSet.size === 0 || productIdSet.has(it.productId.toString());
@@ -52,6 +53,7 @@ export async function POST(req: Request) {
                     discountAmount: discountTotal,
                 };
 
+                // atomically increment usedCount (only if coupon has usageLimit)
                 if (coupon.usageLimit) {
                     await Coupon.findByIdAndUpdate(coupon._id, { $inc: { usedCount: 1 } });
                 }
@@ -59,17 +61,15 @@ export async function POST(req: Request) {
         }
     }
 
-    const order = await Order.create({
+    // create order, include appliedCoupon
+    const newOrder = await Order.create({
         userId: user._id,
-        items: items.map((i: any) => ({
-            productId: i.productId,
-            name: i.name,
-            price: i.price,
-            qty: i.qty
-        })),
+        items,
         shipping: user.shipping,
-        total: subtotal - discountTotal,
-        appliedCoupon: couponPayload,
+        total: total - (couponPayload?.discountAmount || 0),
+        paymentMethod: null,
+        paymentRef: null,
+        appliedCoupon: couponPayload, // add field to Order schema
         status: 'PENDING_PAYMENT'
     });
 

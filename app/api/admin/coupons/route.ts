@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import connect from '@/lib/mongoose';
 import Coupon from '@/models/Coupon';
 import { requireAdminFromRequest } from '@/lib/auth';
+import { createCouponSchema } from '@/lib/validators/coupon';
+
 
 export async function GET(req: Request) {
     await connect();
@@ -25,21 +27,24 @@ export async function POST(req: Request) {
     await connect();
     try { requireAdminFromRequest(req); } catch { return NextResponse.json({ message: 'unauth' }, { status: 401 }); }
 
-    const body = await req.json();
-    const { code, title, description, percent, productIds = [], usageLimit, expiresAt } = body;
+    const bodyText = await req.text();
+    let body: any;
+    try { body = JSON.parse(bodyText); } catch { return NextResponse.json({ message: 'invalid json' }, { status: 400 }); }
 
-    if (!code || typeof percent !== 'number') return NextResponse.json({ message: 'invalid input' }, { status: 400 });
-    if (percent <= 0 || percent > 100) return NextResponse.json({ message: 'percent must be 1-100' }, { status: 400 });
+    const parsed = createCouponSchema.safeParse(body);
+    if (!parsed.success) return NextResponse.json({ message: 'invalid input', errors: parsed.error.format() }, { status: 400 });
 
+    const val = parsed.data;
     try {
         const c = await Coupon.create({
-            code,
-            title,
-            description,
-            percent,
-            productIds,
-            usageLimit,
-            expiresAt,
+            code: val.code,
+            title: val.title,
+            description: val.description,
+            percent: val.percent,
+            productIds: val.productIds,
+            usageLimit: val.usageLimit,
+            minCartTotal: val.minCartTotal,
+            expiresAt: val.expiresAt,
             active: true,
         });
         return NextResponse.json(c, { status: 201 });
