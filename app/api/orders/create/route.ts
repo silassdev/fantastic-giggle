@@ -69,9 +69,7 @@ export async function POST(req: Request) {
         items,
         shipping: user.shipping,
         total: finalTotal,
-        paymentMethod: null,
-        paymentRef: null,
-        appliedCoupon: couponPayload, // add field to Order schema
+        appliedCoupon: couponPayload,
         status: 'PENDING_PAYMENT'
     });
 
