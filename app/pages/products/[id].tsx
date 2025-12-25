@@ -1,9 +1,9 @@
 import { useRouter } from "next/router";
 import useSWR from "swr";
-import api from "../../lib/api";
+import api from "@/lib/api";
 import { useCart } from "../../context/CartContext";
 
-const fetcher = (url: string) => api.get(url).then(r => r.data);
+const fetcher = (url: string) => api.get(url).then((r: any) => r.data);
 
 export default function ProductPage() {
   const router = useRouter();
