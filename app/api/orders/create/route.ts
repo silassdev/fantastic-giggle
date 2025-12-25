@@ -61,17 +61,19 @@ export async function POST(req: Request) {
         }
     }
 
+    const finalTotal = subtotal - (couponPayload?.discountAmount || 0);
+
     // create order, include appliedCoupon
     const newOrder = await Order.create({
         userId: user._id,
         items,
         shipping: user.shipping,
-        total: total - (couponPayload?.discountAmount || 0),
+        total: finalTotal,
         paymentMethod: null,
         paymentRef: null,
         appliedCoupon: couponPayload, // add field to Order schema
         status: 'PENDING_PAYMENT'
     });
 
-    return NextResponse.json({ orderId: order._id });
+    return NextResponse.json({ orderId: newOrder._id });
 }

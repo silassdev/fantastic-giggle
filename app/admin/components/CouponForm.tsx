@@ -11,7 +11,7 @@ export default function CouponForm({ onSaved, initial }: { onSaved: () => void, 
 
     async function submit(e: React.FormEvent) {
         e.preventDefault();
-        const body: any = { code, title, description, percent, productIds: productIdsText ? productIdsText.split(',').map(s => s.trim()) : [] };
+        const body: any = { code, title, description, percent, productIds: productIdsText ? productIdsText.split(',').map((s: string) => s.trim()) : [] };
         if (usageLimit) body.usageLimit = Number(usageLimit);
         const res = await fetch('/api/admin/coupons', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
         if (res.ok) { onSaved(); setCode(''); setTitle(''); setDescription(''); setPercent(10); setProductIdsText(''); setUsageLimit(''); }

@@ -23,11 +23,24 @@ export interface IOrder extends Document {
     percent: number;
     discountAmount: number;
   };
-  status: 'PENDING_PAYMENT' | 'PAID' | 'SHIPPED' | 'CANCELLED';
+  status: 'PENDING_PAYMENT' | 'PAID' | 'SHIPPED' | 'CANCELLED' | 'DELIVERED';
   total: number;
   paymentMethod?: string;
   paymentRef?: string;
   paymentStatus?: string;
+  trackingStatus?: string;
+  trackingUpdates?: Array<{
+    status: string;
+    message: string;
+    location?: string;
+    updatedBy?: any;
+    createdAt: Date;
+  }>;
+  deliveryProof?: {
+    imageUrl?: string;
+    signature?: string;
+    deliveredAt?: Date;
+  };
   createdAt: Date;
   updatedAt: Date;
 }
@@ -50,7 +63,7 @@ const OrderSchema = new Schema({
     percent: Number,
     discountAmount: Number,
   },
-  status: { type: String, enum: ['PENDING_PAYMENT', 'PAID', 'SHIPPED', 'CANCELLED'], default: 'PENDING_PAYMENT' },
+  status: { type: String, enum: ['PENDING_PAYMENT', 'PAID', 'SHIPPED', 'CANCELLED', 'DELIVERED'], default: 'PENDING_PAYMENT' },
   total: Number,
 
   // payment tracking

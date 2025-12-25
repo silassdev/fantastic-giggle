@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import mongoose from 'mongoose';
 import connect from '@/lib/mongoose';
 import Coupon from '@/models/Coupon';
 import { requireAdminFromRequest } from '@/lib/auth';

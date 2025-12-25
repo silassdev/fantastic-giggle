@@ -16,3 +16,11 @@ export function requireAdminFromRequest(req: Request) {
     if (!payload || !payload.id) throw new Error('UNAUTHENTICATED');
     return payload;
 }
+
+export function requireUserFromRequest(req: Request) {
+    const token = getTokenFromRequest(req);
+    if (!token) throw new Error('UNAUTHENTICATED');
+    const payload: any = verifyToken(token);
+    if (!payload || !payload.id) throw new Error('UNAUTHENTICATED');
+    return payload;
+}

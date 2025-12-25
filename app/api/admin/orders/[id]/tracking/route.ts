@@ -36,27 +36,6 @@ export async function POST(
             return NextResponse.json({ message: 'Invalid order id' }, { status: 400 });
         }
 
-        // fetch user
-        const user = await User.findById(order.userId);
-
-        // send notifications (non-blocking)
-        if (user?.email) {
-            sendTrackingEmail({
-                to: user.email,
-                orderId: order._id.toString(),
-                status: parsed.data.status,
-                message: parsed.data.message,
-                location: parsed.data.location,
-            }).catch(console.error);
-        }
-
-        if (user?.phone) {
-            sendTrackingSMS({
-                phone: user.phone,
-                message: `Order ${order._id}: ${parsed.data.status} – ${parsed.data.message}`,
-            }).catch(console.error);
-        }
-
         const body = await req.json();
         const parsed = trackingSchema.safeParse(body);
         if (!parsed.success) {
@@ -71,6 +50,27 @@ export async function POST(
             return NextResponse.json({ message: 'Order not found' }, { status: 404 });
         }
 
+        // fetch user
+        const user = await User.findById(order.userId);
+
+        // send notifications (non-blocking)
+        if (user?.email) {
+            sendTrackingEmail({
+                to: user.email,
+                orderId: order._id.toString(),
+                status: parsed.data.status,
+                message: parsed.data.message,
+                location: parsed.data.location,
+            }).catch(console.error);
+        }
+
+        if (user?.shipping?.phone) {
+            sendTrackingSMS({
+                phone: user.shipping.phone,
+                message: `Order ${order._id}: ${parsed.data.status} – ${parsed.data.message}`,
+            }).catch(console.error);
+        }
+
         // 🧾 Tracking update
         const trackingUpdate = {
             status: parsed.data.status,
@@ -80,13 +80,15 @@ export async function POST(
             createdAt: new Date(),
         };
 
+        if (!order.trackingUpdates) order.trackingUpdates = [];
         order.trackingUpdates.push(trackingUpdate as any);
         order.trackingStatus = parsed.data.status;
 
         // Optional: auto-sync main order status
-        if (parsed.data.status.toLowerCase().includes('deliver')) {
+        const lowerStatus = parsed.data.status.toLowerCase();
+        if (lowerStatus.includes('deliver')) {
             order.status = 'DELIVERED';
-        } else if (parsed.data.status.toLowerCase().includes('ship')) {
+        } else if (lowerStatus.includes('ship')) {
             order.status = 'SHIPPED';
         }
 
