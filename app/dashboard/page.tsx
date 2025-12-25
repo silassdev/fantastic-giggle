@@ -11,11 +11,11 @@ export default function DashboardPage() {
             <h1 className="text-2xl font-semibold mb-6">My dashboard</h1>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div className="lg:col-span-1 bg-white p-4 rounded shadow">
+                <div className="lg:col-span-1 bg-gray-600 p-4 rounded shadow">
                     <ProfileSection />
                 </div>
 
-                <div className="lg:col-span-2 bg-white p-4 rounded shadow">
+                <div className="lg:col-span-2 bg-gray-600 p-4 rounded shadow">
                     <OrdersSection />
                     <div className="mt-6">
                         <NotificationsSection />

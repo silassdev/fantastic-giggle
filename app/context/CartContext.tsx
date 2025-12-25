@@ -1,50 +1,96 @@
+'use client';
+
 import React, { createContext, useContext, useReducer } from "react";
 
+// =====================
 // Types
-export type CartItem = { productId: string; name: string; price: number; qty: number; image?: string };
-export type State = { items: CartItem[] };
-type Action =
+// =====================
+export type CartItem = {
+  productId: string;
+  name: string;
+  price: number;
+  qty: number;
+  image?: string;
+};
+
+export type State = {
+  items: CartItem[];
+};
+
+export type Action =
   | { type: "add"; item: CartItem }
   | { type: "remove"; productId: string }
   | { type: "update"; productId: string; qty: number }
   | { type: "clear" };
 
+// =====================
 // Context Definition
-const CartContext = createContext<{
+// =====================
+interface CartContextValue {
   state: State;
   dispatch: React.Dispatch<Action>;
-} | undefined>(undefined);
+}
 
-const initial: State = { items: [] };
+const CartContext = createContext<CartContextValue | undefined>(undefined);
 
+const initialState: State = {
+  items: [],
+};
+
+// =====================
 // Reducer
-function reducer(state: State, action: Action): State {
+// =====================
+function cartReducer(state: State, action: Action): State {
   switch (action.type) {
     case "add": {
-      const exists = state.items.find(i => i.productId === action.item.productId);
-      if (exists) {
+      const existingItem = state.items.find(
+        (item) => item.productId === action.item.productId
+      );
+
+      if (existingItem) {
         return {
-          items: state.items.map(i => i.productId === action.item.productId
-            ? { ...i, qty: i.qty + action.item.qty }
-            : i)
+          items: state.items.map((item) =>
+            item.productId === action.item.productId
+              ? { ...item, qty: item.qty + action.item.qty }
+              : item
+          ),
         };
       }
-      return { items: [...state.items, action.item] };
+
+      return {
+        items: [...state.items, action.item],
+      };
     }
+
     case "remove":
-      return { items: state.items.filter(i => i.productId !== action.productId) };
+      return {
+        items: state.items.filter(
+          (item) => item.productId !== action.productId
+        ),
+      };
+
     case "update":
-      return { items: state.items.map(i => i.productId === action.productId ? { ...i, qty: action.qty } : i) };
+      return {
+        items: state.items.map((item) =>
+          item.productId === action.productId
+            ? { ...item, qty: action.qty }
+            : item
+        ),
+      };
+
     case "clear":
       return { items: [] };
+
     default:
       return state;
   }
 }
 
+// =====================
 // Provider
+// =====================
 export function CartProvider({ children }: { children: React.ReactNode }) {
-  const [state, dispatch] = useReducer(reducer, initial);
+  const [state, dispatch] = useReducer(cartReducer, initialState);
 
   return (
     <CartContext.Provider value={{ state, dispatch }}>
@@ -53,9 +99,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
+// =====================
 // Hook
-export const useCart = () => {
+// =====================
+export function useCart() {
   const context = useContext(CartContext);
-  if (!context) throw new Error("useCart must be used within a CartProvider");
+
+  if (!context) {
+    throw new Error("useCart must be used within a CartProvider");
+  }
+
   return context;
-};
+}
