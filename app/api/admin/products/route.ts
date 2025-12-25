@@ -29,6 +29,7 @@ export async function POST(req: Request) {
     try { requireAdminFromRequest(req); } catch (e) { return NextResponse.json({ message: 'unauth' }, { status: 401 }); }
 
     const body = await req.json();
-    const p = await Product.create(body);
+    const p = new Product(body);
+    await p.save();
     return NextResponse.json(p, { status: 201 });
 }

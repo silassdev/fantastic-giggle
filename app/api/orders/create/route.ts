@@ -31,7 +31,7 @@ export async function POST(req: Request) {
     const subtotal = items.reduce((s: number, i: any) => s + i.price * i.qty, 0);
 
 
-    let couponPayload = null;
+    let couponPayload = undefined;
     if (body.couponCode) {
         const code = body.couponCode; // from client checkout
         const coupon = await Coupon.findOne({ code });
@@ -64,7 +64,7 @@ export async function POST(req: Request) {
     const finalTotal = subtotal - (couponPayload?.discountAmount || 0);
 
     // create order, include appliedCoupon
-    const newOrder = await Order.create({
+    const newOrder = new Order({
         userId: user._id,
         items: items.map((i: any) => ({
             productId: i.productId,
@@ -83,6 +83,8 @@ export async function POST(req: Request) {
         appliedCoupon: couponPayload,
         status: 'PENDING_PAYMENT'
     });
+
+    await newOrder.save();
 
     return NextResponse.json({ orderId: newOrder._id });
 }

@@ -18,12 +18,14 @@ export async function POST(req: Request) {
         }
 
         const hashedPassword = await bcrypt.hash(password, 12);
-        const user = await User.create({
+        const user = new User({
             name,
             email,
             password: hashedPassword,
             role: 'user'
         });
+
+        await user.save();
 
         return NextResponse.json({ message: 'User created', user: { id: user._id, email: user.email, name: user.name } }, { status: 201 });
     } catch (err: any) {

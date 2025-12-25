@@ -36,7 +36,7 @@ export async function POST(req: Request) {
 
     const val = parsed.data;
     try {
-        const c = await Coupon.create({
+        const c = new Coupon({
             code: val.code,
             title: val.title,
             description: val.description,
@@ -47,6 +47,7 @@ export async function POST(req: Request) {
             expiresAt: val.expiresAt,
             active: true,
         });
+        await c.save();
         return NextResponse.json(c, { status: 201 });
     } catch (err: any) {
         if (err.code === 11000) return NextResponse.json({ message: 'code already exists' }, { status: 409 });
