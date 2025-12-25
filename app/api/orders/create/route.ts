@@ -66,8 +66,19 @@ export async function POST(req: Request) {
     // create order, include appliedCoupon
     const newOrder = await Order.create({
         userId: user._id,
-        items,
-        shipping: user.shipping,
+        items: items.map((i: any) => ({
+            productId: i.productId,
+            name: i.name,
+            price: i.price,
+            qty: i.qty
+        })),
+        shipping: {
+            phone: user.shipping?.phone || '',
+            address: user.shipping?.address || '',
+            city: user.shipping?.city || '',
+            state: user.shipping?.state || '',
+            country: user.shipping?.country || 'Nigeria',
+        },
         total: finalTotal,
         appliedCoupon: couponPayload,
         status: 'PENDING_PAYMENT'

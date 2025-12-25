@@ -6,10 +6,11 @@ import { uploadProof } from '@/lib/upload';
 
 export async function POST(
     req: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     await connect();
     requireAdminFromRequest(req);
+    const { id: orderId } = await params;
 
     const body = await req.json();
     const { imageBase64, signature } = body;
@@ -21,7 +22,7 @@ export async function POST(
     const imageUrl = await uploadProof(imageBase64);
 
     const order = await Order.findByIdAndUpdate(
-        params.id,
+        orderId,
         {
             deliveryProof: {
                 imageUrl,

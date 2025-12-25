@@ -23,7 +23,7 @@ const trackingSchema = z.object({
 
 export async function POST(
     req: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     await connect();
 
@@ -31,7 +31,7 @@ export async function POST(
         // 🔐 Admin auth
         const admin = requireAdminFromRequest(req);
 
-        const orderId = params.id;
+        const { id: orderId } = await params;
         if (!mongoose.isValidObjectId(orderId)) {
             return NextResponse.json({ message: 'Invalid order id' }, { status: 400 });
         }

@@ -24,11 +24,11 @@ export async function GET(req: Request) {
     return NextResponse.json({ items, total });
 }
 
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
     await connect();
     try { requireAdminFromRequest(req); } catch { return NextResponse.json({ message: 'unauth' }, { status: 401 }); }
 
-    const { id } = params;
+    const { id } = await params;
     if (!mongoose.isValidObjectId(id)) return NextResponse.json({ message: 'invalid id' }, { status: 400 });
 
     const bodyText = await req.text();

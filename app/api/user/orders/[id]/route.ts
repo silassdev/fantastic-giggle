@@ -4,11 +4,11 @@ import Order from '@/models/Order';
 import { requireUserFromRequest } from '@/lib/auth';
 import mongoose from 'mongoose';
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
     await connect();
     try {
         const payload: any = requireUserFromRequest(req);
-        const { id } = params;
+        const { id } = await params;
         if (!mongoose.isValidObjectId(id)) return NextResponse.json({ message: 'invalid id' }, { status: 400 });
         const order = await Order.findById(id);
         if (!order) return NextResponse.json({ message: 'not found' }, { status: 404 });
