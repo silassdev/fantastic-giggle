@@ -3,7 +3,7 @@ import useSWR from "swr";
 import api from "@/lib/api";
 import ProductCard from "../components/ProductCard";
 
-const fetcher = (url: string) => api.get(url).then(r => r.data);
+const fetcher = (url: string) => api.get(url).then((r: any) => r.data);
 
 const Home: NextPage = () => {
   const { data: products } = useSWR("/products", fetcher);
