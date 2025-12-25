@@ -29,6 +29,5 @@ const CouponSchema = new Schema<ICoupon>({
     revokedAt: { type: Number },
 }, { timestamps: true });
 
-CouponSchema.index({ code: 1 });
 
 export default mongoose.models.Coupon || mongoose.model<ICoupon>('Coupon', CouponSchema);
