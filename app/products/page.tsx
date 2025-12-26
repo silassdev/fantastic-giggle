@@ -1,48 +1,17 @@
-'use client';
 import React from 'react';
-import { motion } from 'framer-motion';
+import ProductExplorer from './components/ProductExplorer';
 
 export default function ProductsPage() {
-    return (
-        <div className="container py-20">
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="max-w-3xl mx-auto text-center mb-24"
-            >
-                <h1 className="text-5xl md:text-7xl font-black text-brand-dark dark:text-white leading-tight tracking-tight mb-8">
-                    Explore Our Products<br />
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-primary to-blue-400">Select Product and add to cart.</span>
-                </h1>
-                <p className="text-xl text-gray-500 dark:text-gray-400 leading-relaxed">
-                    At ECOM, we believe that high-performance hardware should be accessible to every professional. We curate only the precision-engineered components that pass our rigorous standards.
-                </p>
-            </motion.div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-32">
-                {[
-                    { title: 'Performance', desc: 'Every component is tested for maximum reliability and speed.', icon: '⚡' },
-                    { title: 'Curation', desc: 'We only stock gear that we use and love ourselves.', icon: '💎' },
-                    { title: 'Support', desc: 'Expert technical assistance for every build you dream of.', icon: '🛠️' },
-                ].map((item, idx) => (
-                    <motion.div
-                        key={item.title}
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: idx * 0.1 }}
-                        className="glass p-10 rounded-[2.5rem] border-brand-primary/10 hover:shadow-xl transition-standard"
-                    >
-                        <div className="text-4xl mb-6">{item.icon}</div>
-                        <h3 className="text-2xl font-bold text-brand-dark dark:text-white mb-4">{item.title}</h3>
-                        <p className="text-gray-500 dark:text-gray-400 leading-relaxed">{item.desc}</p>
-                    </motion.div>
-                ))}
-            </div>
-
-            <section className="relative overflow-hidden rounded-[3rem] bg-brand-dark dark:bg-brand-primary/10 p-12 md:p-20 text-white">
-                <div className="absolute top-0 right-0 -z-10 w-full h-full bg-gradient-to-br from-brand-primary/20 to-transparent"></div>
-            </section>
+  return (
+    <div className="container mx-auto px-6 py-10">
+      <header className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-semibold">Products</h1>
+          <p className="text-sm text-gray-500">Explore our computers and accessories</p>
         </div>
-    );
+      </header>
+
+      <ProductExplorer />
+    </div>
+  );
 }

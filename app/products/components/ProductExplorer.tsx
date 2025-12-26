@@ -44,6 +44,10 @@ export default function ProductExplorer() {
       const data = await res.json();
       setItems(Array.isArray(data.items) ? data.items : data);
       setTotal(typeof data.total === 'number' ? data.total : (Array.isArray(data.items) ? data.items.length : 0));
+      if (!data.items?.length && process.env.NODE_ENV !== 'production') {
+      const dbg = await fetch('/api/products?debug=1').then(r => r.json());
+      console.log('products debug', dbg.__debug);
+      }
     } catch (err: any) {
       setError(err?.message || 'Failed to load');
     } finally {
@@ -53,7 +57,7 @@ export default function ProductExplorer() {
 
   // initial + search + page effects
   useEffect(() => {
-    setPage(1); // reset page on new search
+    setPage(1);
   }, [debouncedQ]);
 
   useEffect(() => {
