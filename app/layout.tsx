@@ -5,12 +5,13 @@ import Link from 'next/link';
 import { ThemeProvider } from './components/ThemeProvider';
 
 import { seedAdmin } from '@/lib/seedAdmin';
-
+import { seedProducts } from '@/lib/seedProducts';
 
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
 
 seedAdmin();
+seedProducts();
 
 export const metadata = {
     title: 'ECOM - Premium Tech & Components',
