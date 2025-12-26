@@ -29,6 +29,7 @@ export async function POST(req: Request) {
     if (!user) return NextResponse.json({ message: 'User not found' }, { status: 404 });
 
     const subtotal = items.reduce((s: number, i: any) => s + i.price * i.qty, 0);
+    const shippingFee = 2500;
 
 
     let couponPayload = undefined;
@@ -61,9 +62,25 @@ export async function POST(req: Request) {
         }
     }
 
-    const finalTotal = subtotal - (couponPayload?.discountAmount || 0);
+    // Server-side validation
+    if (!form.phone || !form.address || !form.city || !form.state) {
+        return NextResponse.json({ message: 'Missing shipping information' }, { status: 400 });
+    }
 
-    // create order, include appliedCoupon
+    const finalTotal = subtotal - (couponPayload?.discountAmount || 0) + shippingFee;
+
+    // Update user shipping info even if they exist
+    await User.findByIdAndUpdate(user._id, {
+        $set: {
+            shipping: {
+                phone: form.phone,
+                address: form.address,
+                city: form.city,
+                state: form.state,
+                country: 'Nigeria',
+            }
+        }
+    });
     const newOrder = new Order({
         userId: user._id,
         items: items.map((i: any) => ({
@@ -73,11 +90,11 @@ export async function POST(req: Request) {
             qty: i.qty
         })),
         shipping: {
-            phone: user.shipping?.phone || '',
-            address: user.shipping?.address || '',
-            city: user.shipping?.city || '',
-            state: user.shipping?.state || '',
-            country: user.shipping?.country || 'Nigeria',
+            phone: form.phone,
+            address: form.address,
+            city: form.city,
+            state: form.state,
+            country: 'Nigeria',
         },
         total: finalTotal,
         appliedCoupon: couponPayload,

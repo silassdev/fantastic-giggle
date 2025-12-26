@@ -17,14 +17,22 @@ export async function GET(req: Request, context: any) {
     const filter: any = { isActive: { $ne: false }, outOfStock: { $ne: true } };
 
     if (q) {
-      const re = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
-      filter.$or = [
-        { name: re },
-        { description: re },
-        { slug: re },
-        { tags: re },
-        { category: re }
-      ];
+      const keywords = q.split(/\s+/).filter(k => k.length > 0);
+
+      if (keywords.length > 0) {
+        filter.$and = keywords.map(word => {
+          const re = new RegExp(word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+          return {
+            $or: [
+              { name: re },
+              { description: re },
+              { slug: re },
+              { tags: re },
+              { category: re }
+            ]
+          };
+        });
+      }
     }
 
     const rawTotal = await Product.countDocuments({});

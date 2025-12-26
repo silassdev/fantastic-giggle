@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import connect from '@/lib/mongoose';
 import Order from '@/models/Order';
+import User from '@/models/User';
 
 export async function POST(req: Request) {
     await connect();
@@ -10,11 +11,14 @@ export async function POST(req: Request) {
     const order = await Order.findById(orderId);
     if (!order) return NextResponse.json({ message: 'order not found' }, { status: 404 });
 
+    const user = await User.findById(order.userId);
+    const email = user?.email || 'customer@example.com';
+
     // initialize with Paystack
     const amountKobo = Math.round(order.total * 100);
     const callbackUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/payments/paystack/callback`; // optional
     const body = {
-        email: (order as any).shipping?.email || 'customer@example.com',
+        email: email,
         amount: amountKobo,
         reference: `order_${order._id.toString()}_${Date.now()}`,
         callback_url: callbackUrl,

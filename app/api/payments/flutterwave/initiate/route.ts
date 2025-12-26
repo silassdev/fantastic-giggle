@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import connect from '@/lib/mongoose';
 import Order from '@/models/Order';
+import User from '@/models/User';
 
 export async function POST(req: Request) {
     await connect();
@@ -10,6 +11,8 @@ export async function POST(req: Request) {
     const order = await Order.findById(orderId);
     if (!order) return NextResponse.json({ message: 'order not found' }, { status: 404 });
 
+    const user = await User.findById(order.userId);
+
     const body = {
         tx_ref: `order_${order._id.toString()}_${Date.now()}`,
         amount: String(order.total),
@@ -17,9 +20,9 @@ export async function POST(req: Request) {
         redirect_url: `${process.env.NEXT_PUBLIC_BASE_URL}/payments/flutterwave/callback`,
         payment_options: 'card,ussd,banktransfer',
         customer: {
-            email: (order as any).shipping?.email || 'customer@example.com',
-            phonenumber: (order as any).shipping?.phone || '',
-            name: (order as any).shipping?.name || 'Customer',
+            email: user?.email || 'customer@example.com',
+            phonenumber: order.shipping?.phone || user?.shipping?.phone || '',
+            name: user?.name || 'Customer',
         },
         meta: { orderId: order._id.toString() },
     };

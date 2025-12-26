@@ -88,8 +88,25 @@ export default function CheckoutPage() {
         }
     };
 
+    const [error, setError] = useState('');
+
     const submitOrder = async () => {
         if (items.length === 0) return;
+
+        // Validation
+        if (!form.address || !form.phone || !form.city || !form.state) {
+            setError('Please fill in all shipping details to continue.');
+            // Scroll to top or to the shipping section
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+        }
+
+        if (!user && !form.password) {
+            setError('Please create a password for your account.');
+            return;
+        }
+
+        setError('');
         setSubmitting(true);
         try {
             const res = await fetch('/api/orders/create', {
@@ -106,10 +123,10 @@ export default function CheckoutPage() {
                 dispatch({ type: 'clear' });
                 router.push(`/checkout/confirm/${data.orderId}`);
             } else {
-                alert(data.message || 'Failed to create order');
+                setError(data.message || 'Failed to create order');
             }
         } catch (err) {
-            alert('An error occurred');
+            setError('An unexpected error occurred. Please try again.');
         } finally {
             setSubmitting(false);
         }
@@ -124,6 +141,20 @@ export default function CheckoutPage() {
                     <h1 className="text-4xl font-black text-brand-dark dark:text-white mb-2">Checkout</h1>
                     <p className="text-gray-500 dark:text-gray-400 font-medium">Complete your premium order</p>
                 </header>
+
+                <AnimatePresence>
+                    {error && (
+                        <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-4 rounded-2xl mb-8 flex items-center justify-between border border-red-100 dark:border-red-900/10"
+                        >
+                            <span className="font-bold text-sm">{error}</span>
+                            <button onClick={() => setError('')}>✕</button>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
                     {/* Left: Shipping & Account */}

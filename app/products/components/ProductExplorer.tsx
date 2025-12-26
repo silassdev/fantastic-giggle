@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useCallback, useRef } from 'react';
+import { useSearchParams } from 'next/navigation';
 import ProductCard from '@/app/components/ProductCard';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -23,8 +24,19 @@ type Product = {
 };
 
 export default function ProductExplorer() {
-  const [q, setQ] = useState('');
+  const searchParams = useSearchParams();
+  const initialQ = searchParams.get('q') || '';
+
+  const [q, setQ] = useState(initialQ);
   const debouncedQ = useDebounce(q, 350);
+
+  // Sync state with URL when it changes (e.g. header search)
+  useEffect(() => {
+    const urlQ = searchParams.get('q') || '';
+    if (urlQ !== q) {
+      setQ(urlQ);
+    }
+  }, [searchParams]);
   const [page, setPage] = useState(1);
   const limit = 12;
 
@@ -100,8 +112,8 @@ export default function ProductExplorer() {
                 key={p}
                 onClick={() => setPage(Number(p))}
                 className={`w-12 h-12 rounded-2xl text-sm font-black transition-all ${page === p
-                    ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/30'
-                    : 'bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 hover:border-brand-primary text-gray-600 dark:text-gray-400'
+                  ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/30'
+                  : 'bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 hover:border-brand-primary text-gray-600 dark:text-gray-400'
                   }`}
               >
                 {p}
