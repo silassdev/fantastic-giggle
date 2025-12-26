@@ -18,7 +18,13 @@ export async function GET(req: Request, context: any) {
 
     if (q) {
       const re = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
-      filter.$or = [{ name: re }, { description: re }];
+      filter.$or = [
+        { name: re },
+        { description: re },
+        { slug: re },
+        { tags: re },
+        { category: re }
+      ];
     }
 
     const rawTotal = await Product.countDocuments({});

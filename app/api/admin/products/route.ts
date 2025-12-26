@@ -20,7 +20,16 @@ export async function GET(req: Request) {
   const skip = (page - 1) * limit;
 
   const filter: any = {};
-  if (q) filter.$text = { $search: q };
+  if (q) {
+    const re = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+    filter.$or = [
+      { name: re },
+      { description: re },
+      { slug: re },
+      { tags: re },
+      { category: re }
+    ];
+  }
   if (category) filter.category = category;
 
   const items = await Product.find(filter)
