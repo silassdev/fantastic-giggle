@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import ProductExplorer from './components/ProductExplorer';
 
 export default function ProductsPage() {
@@ -11,7 +11,9 @@ export default function ProductsPage() {
         </div>
       </header>
 
-      <ProductExplorer />
+      <Suspense fallback={<div className="py-20 text-center">Loading products…</div>}>
+        <ProductExplorer />
+      </Suspense>
     </div>
   );
 }
