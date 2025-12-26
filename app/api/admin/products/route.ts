@@ -49,9 +49,11 @@ export async function POST(req: Request) {
     slug: body.slug || body.name.toLowerCase().split(' ').join('_'),
     description: body.description || '',
     price: Number(body.price) || 0,
-    images: Array.isArray(body.images) ? body.images : [],
+    images: Array.isArray(body.images) ? body.images.filter(Boolean) : [],
     stock: Number(body.stock) || 0,
-    category: body.category || undefined,
+    category: body.category || '',
+    tags: Array.isArray(body.tags) ? body.tags : [],
+    colors: Array.isArray(body.colors) ? body.colors : [],
 
     isActive: body.isActive !== undefined ? Boolean(body.isActive) : true,
     outOfStock:
