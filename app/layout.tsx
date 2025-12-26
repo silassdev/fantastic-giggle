@@ -57,8 +57,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                                         <div className="flex flex-col md:flex-row justify-between items-center pt-8 gap-4">
                                             <div className="text-xs text-gray-400">© {new Date().getFullYear()} ECOM DIGITAL. ALL RIGHTS RESERVED.</div>
                                             <div className="flex gap-6 text-xs text-gray-400 font-bold uppercase tracking-tighter">
-                                                <Link href="#" className="hover:text-brand-dark dark:hover:text-white">Privacy</Link>
-                                                <Link href="#" className="hover:text-brand-dark dark:hover:text-white">Terms</Link>
+                                                <Link href="/privacy" className="hover:text-brand-dark dark:hover:text-white transition-all">Privacy</Link>
+                                                <Link href="/terms" className="hover:text-brand-dark dark:hover:text-white transition-all">Terms</Link>
                                             </div>
                                         </div>
                                     </div>
