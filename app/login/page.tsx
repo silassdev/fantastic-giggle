@@ -4,10 +4,12 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import Toast from '@/app/components/Toast'
+import { useAuth } from '../context/AuthContext';
 
 
 export default function LoginPage() {
   const router = useRouter();
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setLoading] = useState(false);
@@ -38,6 +40,11 @@ export default function LoginPage() {
         setToast({ msg: message, type: 'error' });
         setLoading(false);
         return;
+      }
+
+      // Update global auth state
+      if (data?.user) {
+        login(data.user);
       }
 
       setToast({ msg: 'Login successful', type: 'success' });
