@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import ThemeToggle from './ThemeToggle';
+import { useCart } from '../context/CartContext';
 
 type User = {
   id: string;
@@ -13,6 +14,9 @@ type User = {
 } | null;
 
 export default function Header() {
+  const { state } = useCart();
+  const cartCount = state.items.reduce((acc, item) => acc + item.qty, 0);
+
   const [isScrolled, setIsScrolled] = useState(false);
   const [user, setUser] = useState<User | undefined>(undefined); // undefined = loading, null = not authed
   const router = useRouter();
@@ -46,11 +50,8 @@ export default function Header() {
     try {
       await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
     } catch (err) {
-      // ignore network error
     } finally {
-      // clear client-side state and navigate to home or login
       setUser(null);
-      // prefer full reload so server-side auth guards also update immediately
       router.push('/login');
     }
   }
@@ -141,7 +142,7 @@ export default function Header() {
                 href="/cart"
                 className="px-5 py-2 rounded-full bg-brand-dark dark:bg-brand-primary text-white text-sm font-semibold hover:bg-brand-primary dark:hover:bg-brand-secondary transition-standard shadow-md hover:shadow-brand-primary/25"
               >
-                Cart (0)
+                Cart ({cartCount})
               </Link>
             </div>
           </div>

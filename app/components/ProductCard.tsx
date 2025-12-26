@@ -2,8 +2,26 @@
 import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { useCart } from '@/app/context/CartContext';
 
 export default function ProductCard({ product }: { product: any }) {
+  const { dispatch } = useCart();
+
+  const handleQuickAdd = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dispatch({
+      type: 'add',
+      item: {
+        productId: product._id,
+        name: product.name,
+        price: product.price,
+        qty: 1,
+        image: product.images?.[0]
+      }
+    });
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -24,9 +42,13 @@ export default function ProductCard({ product }: { product: any }) {
             className="object-contain h-4/5 w-4/5 group-hover:scale-110 transition-transform duration-500"
           />
           <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-standard">
-            <div className="w-8 h-8 rounded-full glass bg-white/50 dark:bg-brand-dark/50 flex items-center justify-center text-brand-dark dark:text-white">
-              <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"></path></svg>
-            </div>
+            <button
+              onClick={handleQuickAdd}
+              className="w-8 h-8 rounded-full glass bg-white/50 dark:bg-brand-dark/50 flex items-center justify-center text-brand-dark dark:text-white hover:bg-brand-primary hover:text-white transition-all shadow-lg"
+              title="Quick Add to Cart"
+            >
+              <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"></path></svg>
+            </button>
           </div>
         </div>
 

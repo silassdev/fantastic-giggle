@@ -13,20 +13,17 @@ export async function GET(req: Request, context: any) {
     const skip = (page - 1) * limit;
     const debug = url.searchParams.has('debug');
 
-    // default filter used by UI
-    const filter: any = { isActive: true, outOfStock: { $ne: true } };
+
+    const filter: any = { isActive: { $ne: false }, outOfStock: { $ne: true } };
 
     if (q) {
-      // use regex fallback for consistent behavior when text index absent
       const re = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
       filter.$or = [{ name: re }, { description: re }];
     }
 
-    // raw counts for debugging
     const rawTotal = await Product.countDocuments({});
     const filteredTotal = await Product.countDocuments(filter);
 
-    // find items
     const items = await Product.find(filter).sort(sortParam).skip(skip).limit(limit).lean();
 
     const payload: any = { items, total: filteredTotal };

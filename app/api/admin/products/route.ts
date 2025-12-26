@@ -46,9 +46,11 @@ export async function POST(req: Request) {
   // Whitelist fields (prevents junk / malicious payloads)
   const pBody = {
     name: body.name,
+    slug: body.slug || body.name.toLowerCase().split(' ').join('_'),
     description: body.description || '',
     price: Number(body.price) || 0,
     images: Array.isArray(body.images) ? body.images : [],
+    stock: Number(body.stock) || 0,
     category: body.category || undefined,
 
     isActive: body.isActive !== undefined ? Boolean(body.isActive) : true,
