@@ -2,6 +2,8 @@
 import React, { useEffect, useState, use } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import Loader from '@/app/components/Loader';
+
 
 export default function OrderDetailsPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
@@ -21,7 +23,7 @@ export default function OrderDetailsPage({ params }: { params: Promise<{ id: str
         loadOrder();
     }, [id]);
 
-    if (loading) return <div className="p-10 text-center">Loading order details...</div>;
+    if (loading) return <Loader size={10} />;
     if (!order) return <div className="p-10 text-center text-red-500">Order not found</div>;
 
     return (

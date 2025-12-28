@@ -1,6 +1,8 @@
 'use client';
 import React, { useEffect, useState, use } from 'react';
 import Link from 'next/link';
+import Loader from '@/app/components/Loader';
+
 
 export default function AdminNotificationDetailsPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
@@ -18,7 +20,7 @@ export default function AdminNotificationDetailsPage({ params }: { params: Promi
 
     useEffect(() => { load(); }, [id]);
 
-    if (loading) return <div className="p-10 text-center">Loading notification...</div>;
+    if (loading) return <Loader size={7} />;
     if (!note) return <div className="p-10 text-center text-red-500">Notification not found</div>;
 
     return (

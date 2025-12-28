@@ -30,7 +30,6 @@ export default function ProductExplorer() {
   const [q, setQ] = useState(initialQ);
   const debouncedQ = useDebounce(q, 350);
 
-  // Sync state with URL when it changes (e.g. header search)
   useEffect(() => {
     const urlQ = searchParams.get('q') || '';
     if (urlQ !== q) {
@@ -65,7 +64,7 @@ export default function ProductExplorer() {
     } catch (err: any) {
       setError(err?.message || 'Failed to load');
     } finally {
-      setTimeout(() => setLoading(false), 400); // Small delay for smoother transition
+      setTimeout(() => setLoading(false), 400); 
     }
   }, []);
 
