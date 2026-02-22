@@ -5,7 +5,7 @@ import Order from '@/models/Order';
 import User from '@/models/User';
 import WebhookEvent from '@/models/WebhookEvent';
 import Notification from '@/models/Notification';
-import { POST as paystackWebhookPOST } from '@/app/api/payments/paystack/webhook/route'; // adjust import path per your project
+import { POST as paystackWebhookPOST } from '@/app/api/payments/paystack/webhook/route';
 import { sign } from 'crypto';
 
 jest.mock('node-fetch', () => jest.fn());
